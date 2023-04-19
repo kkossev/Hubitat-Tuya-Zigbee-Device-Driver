@@ -1,1 +1,3 @@
-# Hubitat-Tuya-Zigbee-Device-Driver
+# [IDEA][PROJECT] Hubitat-Tuya-Zigbee-Device-Driver
+
+Work in progress ..
