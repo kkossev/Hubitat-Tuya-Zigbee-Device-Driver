@@ -29,8 +29,8 @@
  *                                   TODO: 'device' capability
  */
 
-def version() { "1.0.0" }
-def timeStamp() {"2023/04/20 1:00 PM"}
+static String version() { "1.0.0" }
+static String timeStamp() {"2023/04/20 1:00 PM"}
 
 @Field static final Boolean _DEBUG = true
 
@@ -78,7 +78,7 @@ metadata {
  */
 void parse(final String description) {
     log.debug "parse: ${description}"
-    if (state.stats != null) state.stats['RxCtr'] = (state.stats['RxCtr'] ?: 0) + 1; else state.stats=[:]
+    if (state.stats != null) state.stats['RxCtr'] = (state.stats['RxCtr'] ?: 0) + 1 else state.stats=[:]
 
 }
 
@@ -89,24 +89,24 @@ void parse(final String description) {
  * Tuya cluster EF00 specific code
  * -----------------------------------------------------------------------------
 */
-private getCLUSTER_TUYA()       { 0xEF00 }
-private getSETDATA()            { 0x00 }
-private getSETTIME()            { 0x24 }
+private static getCLUSTER_TUYA()       { 0xEF00 }
+private static getSETDATA()            { 0x00 }
+private static getSETTIME()            { 0x24 }
 
 // Tuya Commands
-private getTUYA_REQUEST()       { 0x00 }
-private getTUYA_REPORTING()     { 0x01 }
-private getTUYA_QUERY()         { 0x02 }
-private getTUYA_STATUS_SEARCH() { 0x06 }
-private getTUYA_TIME_SYNCHRONISATION() { 0x24 }
+private static getTUYA_REQUEST()       { 0x00 }
+private static getTUYA_REPORTING()     { 0x01 }
+private static getTUYA_QUERY()         { 0x02 }
+private static getTUYA_STATUS_SEARCH() { 0x06 }
+private static getTUYA_TIME_SYNCHRONISATION() { 0x24 }
 
 // tuya DP type
-private getDP_TYPE_RAW()        { "01" }    // [ bytes ]
-private getDP_TYPE_BOOL()       { "01" }    // [ 0/1 ]
-private getDP_TYPE_VALUE()      { "02" }    // [ 4 byte value ]
-private getDP_TYPE_STRING()     { "03" }    // [ N byte string ]
-private getDP_TYPE_ENUM()       { "04" }    // [ 0-255 ]
-private getDP_TYPE_BITMAP()     { "05" }    // [ 1,2,4 bytes ] as bits
+private static getDP_TYPE_RAW()        { "01" }    // [ bytes ]
+private static getDP_TYPE_BOOL()       { "01" }    // [ 0/1 ]
+private static getDP_TYPE_VALUE()      { "02" }    // [ 4 byte value ]
+private static getDP_TYPE_STRING()     { "03" }    // [ N byte string ]
+private static getDP_TYPE_ENUM()       { "04" }    // [ 0-255 ]
+private static getDP_TYPE_BITMAP()     { "05" }    // [ 1,2,4 bytes ] as bits
 
 private sendTuyaCommand(dp, dp_type, fncmd) {
     ArrayList<String> cmds = []
@@ -141,11 +141,11 @@ def tuyaBlackMagic() {
  * Invoked when device is first installed and when the user updates the configuration
  * @return sends zigbee commands
  */
-List<String> configure() {
-    List<String> cmds = []
+def configure() {
+    ArrayList<String> cmds = []
     logInfo 'configure...'
     logDebug settings
-    cmds = tuyaBlackMagic()
+    cmds += tuyaBlackMagic()
     sendZigbeeCommands(cmds)
 }
 
@@ -173,11 +173,11 @@ void logsOff() {
  *-----------------------------------------------------------------------------
 */
 
-Integer safeToInt(val, Integer defaultVal=0) {
+static Integer safeToInt(val, Integer defaultVal=0) {
 	return "${val}"?.isInteger() ? "${val}".toInteger() : defaultVal
 }
 
-Double safeToDouble(val, Double defaultVal=0.0) {
+static Double safeToDouble(val, Double defaultVal=0.0) {
 	return "${val}"?.isDouble() ? "${val}".toDouble() : defaultVal
 }
 
@@ -186,12 +186,12 @@ void sendZigbeeCommands(ArrayList<String> cmd) {
     hubitat.device.HubMultiAction allActions = new hubitat.device.HubMultiAction()
     cmd.each {
             allActions.add(new hubitat.device.HubAction(it, hubitat.device.Protocol.ZIGBEE))
-            if (state.stats != null) state.stats['TxCtr'] = (state.stats['TxCtr'] ?: 0) + 1; else state.stats=[:]
+            if (state.stats != null) state.stats['TxCtr'] = (state.stats['TxCtr'] ?: 0) + 1 else state.stats=[:]
     }
     sendHubCommand(allActions)
 }
 
-def driverVersionAndTimeStamp() {version() + ' ' + timeStamp() + ((_DEBUG) ? " debug version!" : " ")}
+static def driverVersionAndTimeStamp() {version() + ' ' + timeStamp() + ((_DEBUG) ? " debug version!" : " ")}
 
 def getDeviceInfo() {
     return "model=${device.getDataValue('model')} manufacturer=${device.getDataValue('manufacturer')} destinationEP=${state.destinationEP ?: UNKNOWN} <b>deviceProfile=${state.deviceProfile ?: UNKNOWN}</b>"
